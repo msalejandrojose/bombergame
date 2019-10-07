@@ -10,7 +10,8 @@ function Juego() {
             this.partidas[idp]=new Partida(nombre,idp);
 			this.partidas[idp].agregarJugador(this.usuarios[nick]);
 		}
-	}
+    }
+    
     this.agregarUsuario = function (usr) {
         this.fase.agregarJugador(usr,this);
     }
