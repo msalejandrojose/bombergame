@@ -4,6 +4,7 @@ function ClienteRest(){
         $.getJSON("/agregarUsuario/"+nick,function(data){    
             console.log(data);
             //mostrar Usuario
+            mostrarUsuario(data);
         });
     }
 
