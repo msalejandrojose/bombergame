@@ -1,10 +1,16 @@
+
 function ClienteRest(){
 
     this.agregarUsuario=function(nick){
         $.getJSON("/agregarUsuario/"+nick,function(data){    
             console.log(data);
             //mostrar Usuario
-            mostrarUsuario(data);
+            if(data.nick==''){
+                mostrarUsuarioNoLogueado();
+            }else{
+                mostrarUsuario(data);
+            }
+            
         });
     }
 
@@ -16,9 +22,11 @@ function ClienteRest(){
     }
 
     this.obtenerPartidas=function(){
-        $.getJSON("/obtenerPartida",function(data){    
-            console.log(data);
+        $.getJSON("/obtenerPartidas",function(data){    
+            //console.log(data);
             //mostrar Usuario
+            return data;
+            mostrarListadoPartidas(data);
         });
     }
 
