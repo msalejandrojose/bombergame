@@ -1,2 +1,2 @@
-# bombergame
-Juego de procesos sobre bombas
+# Bombergame
+Juego multijugador basado en bomberman
