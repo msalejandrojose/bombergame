@@ -39,6 +39,7 @@ function Juego(){
 			this.partidas[nombre].agregarJugador(this.usuarios[nick]);
 			partida=this.partidas[nombre];
 		}
+		
 		return partida;
 	}
 	this.salir=function(nombrePartida,nick){

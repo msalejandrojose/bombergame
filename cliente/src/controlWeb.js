@@ -81,7 +81,7 @@ function mostrarListaPartidas(data){
   		cadena=cadena+'<tr>'
   		cadena=cadena+'<td>'+data[key].nombre+'</td>';
   		cadena=cadena+'<td>'+Object.keys(data[key].jugadores).length+'</td>';
- 		cadena=cadena+'<td><button type="button" id="unirmeAPartidaBtn" class="btn btn-primary btn-md" onclick="rest.unirAPartida(\''+data[key].idp+'\',\''+nick+'\')">Unirse a partida</button></td>';
+ 		cadena=cadena+'<td><button type="button" id="unirmeAPartidaBtn" class="btn btn-primary btn-md" onclick="ws.unirAPartida(\''+data[key].idp+'\',\''+nick+'\')">Unirse a partida</button></td>';
  		cadena=cadena+'</tr>';
   	};
   	cadena=cadena+"</tbody></table></div>";

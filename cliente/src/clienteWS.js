@@ -13,6 +13,12 @@ function ClienteWS(nick) {
         console.log("usuario " + this.nick + " crea partida " + nombrePartida+" con WS");
     }
 
+    this.unirAPartida = function (idp,nick) {
+        //this.nombrePartida=nombre;
+        this.socket.emit('unirAPartida', idp, nick);
+        //console.log("usuario " + this.nick + " crea partida " + nombrePartida+" con WS");
+    }
+
     this.lanzarSocketSrv = function () {
         var cli = this;
         this.socket.on('connect', function () {
@@ -26,6 +32,12 @@ function ClienteWS(nick) {
         });
         this.socket.on('nuevoJugador',function(jugadores){
             mostrarListaJugadores(jugadores);
+        });
+        
+        this.socket.on('unido',function(partida){
+            console.log('unido WS');
+            mostrarPartida(partida)
+            mostrarListaJugadores(partida.jugadores);
         });
     }
 
