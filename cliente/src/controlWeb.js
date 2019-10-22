@@ -19,6 +19,8 @@ function mostrarAgregarUsuario(){
 
 function mostrarUsuario(data){
 	$('#mAU').remove();
+	ws = new ClienteWS(data.nick);
+	ws.ini();
 	//var cadena="<h3>Bienvenido "+data.nick;
 	//$('#inicio').append(cadena);
 	nick=data.nick;
@@ -47,10 +49,12 @@ function mostrarCrearPartida(nick){
         if (nombre==""){
         	nombre="SinNombre";
         }
-        rest.crearPartida(nombre,nick);
+		//rest.crearPartida(nombre,nick);
+		ws.crearPartida(nombre);
      });
 	$('#unirseAPartidaBtn').on('click',function(){
-        rest.obtenerPartidas();
+		rest.obtenerPartidas();
+		//ws.crearPartida(nombre);
      });
 
 }
@@ -78,6 +82,27 @@ function mostrarListaPartidas(data){
   		cadena=cadena+'<td>'+data[key].nombre+'</td>';
   		cadena=cadena+'<td>'+Object.keys(data[key].jugadores).length+'</td>';
  		cadena=cadena+'<td><button type="button" id="unirmeAPartidaBtn" class="btn btn-primary btn-md" onclick="rest.unirAPartida(\''+data[key].idp+'\',\''+nick+'\')">Unirse a partida</button></td>';
+ 		cadena=cadena+'</tr>';
+  	};
+  	cadena=cadena+"</tbody></table></div>";
+  	$('#inicio').append(cadena);
+}
+
+function mostrarListaJugadores(jugadores){
+	$('#mLJ').remove();
+	//var numeroPartidas=Object.keys(data).length;
+	var cadena="<div id='mLJ'>";
+	cadena=cadena+"<h3>Lista de jugadores</h3>";
+	//cadena=cadena+'<ul class="list-group">';
+  	cadena=cadena+'<table class="table"><thead><tr>';
+    cadena=cadena+'<th scope="col">Nick</th><th scope="col">Vidas</th><th>Listo</th>';
+    cadena=cadena+'</tr></thead>';
+    cadena=cadena+'<tbody>';
+  	for(var key in jugadores){
+  		cadena=cadena+'<tr>'
+  		cadena=cadena+'<td>'+jugadores[key].nick+'</td>';
+  		cadena=cadena+'<td>'+10+'</td>';
+ 		cadena=cadena+'<td>Ready?</td>';
  		cadena=cadena+'</tr>';
   	};
   	cadena=cadena+"</tbody></table></div>";

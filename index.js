@@ -6,6 +6,12 @@ var exp=require("express");
 var app=exp(); 
 var modelo=require("./servidor/modelo.js");
 
+var server = require('http').Server(app);
+var io = require('socket.io').listen(server);
+
+var srvWS=require('./servidor/servidorWS.js');
+var ws=new srvWS.ServidorWS();
+
 var juego=new modelo.Juego();
 
 app.use(exp.static(__dirname + "/cliente"));
@@ -59,4 +65,10 @@ app.get("/obtenerJugadores/:nombrePartida",function(request,response){
 });
 
 console.log("Servidor escuchando en "+host+":"+port);
-app.listen(port,host);
+//app.listen(port,host);
+
+server.listen(port, function() {
+	console.log('Node app se está ejecutando en el puerto: ', port);
+  });
+  
+ws.lanzarSocketSrv(io,juego)
