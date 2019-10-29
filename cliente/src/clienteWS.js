@@ -19,6 +19,10 @@ function ClienteWS(nick) {
         //console.log("usuario " + this.nick + " crea partida " + nombrePartida+" con WS");
     }
 
+    this.preparado = function(){
+        this.socket.emit('preparado',this.idp,this.nick);
+    }
+
     this.lanzarSocketSrv = function () {
         var cli = this;
         this.socket.on('connect', function () {

@@ -31,6 +31,18 @@ function ServidorWS() {
                 cli.enviarATodosMenosRemitente(socket, idp, 'nuevoJugador', partida.jugadores);
 
             });
+
+            socket.on('preparado', function (idp, nick) {
+                var partida = juego.partidas[idp];
+                juego.jugadorPreparado(idp,nick,function(){
+                    cli.enviarRemitente(socket,'estoyPreparado',partida);
+                });
+
+                //socket.join(idp);
+                //cli.enviarRemitente(socket, "unido", partida);
+                //cli.enviarATodosMenosRemitente(socket, idp, 'nuevoJugador', partida.jugadores);
+
+            });
         });
     }
 

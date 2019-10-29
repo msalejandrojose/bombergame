@@ -1,110 +1,134 @@
 
-function Juego(){
-	this.partidas={};
-	this.usuarios={};
+function Juego() {
+	this.partidas = {};
+	this.usuarios = {};
 
-	this.crearPartida=function(nombre,nick,callback){
-		var idp=nombre+nick;
+	this.crearPartida = function (nombre, nick, callback) {
+		var idp = nombre + nick;
 		var partida;
-		if (!this.partidas[idp]){
-			partida=new Partida(nombre,idp);
+		if (!this.partidas[idp]) {
+			partida = new Partida(nombre, idp);
 			partida.agregarJugador(this.usuarios[nick]);
 			//partida.jugadores[nick]=this.usuarios[nick];
-			this.partidas[idp]=partida;
+			this.partidas[idp] = partida;
 		}
-		else{
-			partida=this.partidas[idp];
+		else {
+			partida = this.partidas[idp];
 		}
 		callback(partida);
 	}
-	this.agregarUsuario=function(nombre,callback){
-		if (!this.usuarios[nombre]){
-			console.log("Nuevo usuario: "+nombre);
-			this.usuarios[nombre]=new Usuario(nombre);
+	this.agregarUsuario = function (nombre, callback) {
+		if (!this.usuarios[nombre]) {
+			console.log("Nuevo usuario: " + nombre);
+			this.usuarios[nombre] = new Usuario(nombre);
 			callback(this.usuarios[nombre]);
 		}
-		else{
-			callback({nick:""});
+		else {
+			callback({ nick: "" });
 		}
 	}
-	this.obtenerUsuarios=function(callback){
+	this.obtenerUsuarios = function (callback) {
 		callback(this.usuarios);
 	}
-	this.obtenerPartidas=function(callback){
+	this.obtenerPartidas = function (callback) {
 		callback(this.partidas);
 	}
-	this.unirAPartida=function(nombre,nick){
-		var partida={};
-		if (this.partidas[nombre] && this.usuarios[nick]){
+	this.unirAPartida = function (nombre, nick) {
+		var partida = {};
+		if (this.partidas[nombre] && this.usuarios[nick]) {
 			this.partidas[nombre].agregarJugador(this.usuarios[nick]);
-			partida=this.partidas[nombre];
+			partida = this.partidas[nombre];
 		}
-		
+
 		return partida;
 	}
-	this.salir=function(nombrePartida,nick){
+	this.salir = function (nombrePartida, nick) {
 		this.partidas[nombrePartida].salir(nick);
-		if (this.comprobarJugadores(nombrePartida)==0){
+		if (this.comprobarJugadores(nombrePartida) == 0) {
 			this.eliminarPartida(nombrePartida);
 		}
 	}
-	this.comprobarJugadores=function(nombrePartida){
+	this.comprobarJugadores = function (nombrePartida) {
 		return Object.keys(this.partidas[nombrePartida].jugadores).length;
 	}
-	this.eliminarPartida=function(nombrePartida){
+	this.eliminarPartida = function (nombrePartida) {
 		delete this.partidas[nombrePartida];
 	}
-	this.obtenerJugadoresPartida=function(nombrePartida,callback){
-		var jugadores={};
-		if (this.partidas[nombrePartida]){
-			jugadores=this.partidas[nombrePartida].obtenerJugadores();
+	this.obtenerJugadoresPartida = function (nombrePartida, callback) {
+		var jugadores = {};
+		if (this.partidas[nombrePartida]) {
+			jugadores = this.partidas[nombrePartida].obtenerJugadores();
 		}
 		callback(jugadores);
 	}
+
+
 }
 
-function Partida(nombre,idp){
-	this.nombre=nombre;
-	this.idp=idp;
-	this.jugadores={};
-	this.fase=new Inicial();
-	this.agregarJugador=function(usr){
-		this.fase.agregarJugador(usr,this);
+function Partida(nombre, idp) {
+	this.nombre = nombre;
+	this.idp = idp;
+	this.jugadores = {};
+	this.fase = new Inicial();
+	this.agregarJugador = function (usr) {
+		this.fase.agregarJugador(usr, this);
 	}
-	this.puedeAgregarJugador=function(usr){
-		this.jugadores[usr.nick]=usr;
+	this.puedeAgregarJugador = function (usr) {
+		this.jugadores[usr.nick] = usr;
 	}
-	this.obtenerJugadores=function(){
+	this.obtenerJugadores = function () {
 		return this.jugadores;
 	}
-	this.salir=function(nick){
+	this.salir = function (nick) {
 		delete this.jugadores[nick];
 	}
-}
+	this.jugadorPreparado = function (nick) {
+		if (this.jugadores[nick]) {
+			this.jugadores[nick].estoyPreparado();
+		}
+		if (this.comprobarTodosPreparados()) {
+			this.fase = null;
+			this.fase = new Jugando();
+		}
+	}
 
-function Inicial(){
-	this.nombre="inicial";
-	this.agregarJugador=function(usr,partida){
-		partida.puedeAgregarJugador(usr);
+	this.comprobarTodosPreparados = function () {
+		todosPreparados = true;
+		for (var key in this.jugadores) {
+			if (this.jugadores[key].preparado != "Ready") {
+				todosPreparados = false;
+			};
+			return false;
+		}
 	}
 }
-
-function Jugando(){
-	this.nombre="jugando";
-	this.agregarJugador=function(usr,partida){
-		console.log("El juego ya ha comenzado");
+	function Inicial() {
+		this.nombre = "inicial";
+		this.agregarJugador = function (usr, partida) {
+			partida.puedeAgregarJugador(usr);
+		}
 	}
-}
 
-function Final(){
-	this.nombre="final";
-	this.agregarJugador=function(usr,partida){
-		console.log("El juego ya ha terminado");
+	function Jugando() {
+		this.nombre = "jugando";
+		this.agregarJugador = function (usr, partida) {
+			console.log("El juego ya ha comenzado");
+		}
 	}
-}
 
-function Usuario(nick){
-	this.nick=nick;
-}
+	function Final() {
+		this.nombre = "final";
+		this.agregarJugador = function (usr, partida) {
+			console.log("El juego ya ha terminado");
+		}
+	}
 
-module.exports.Juego=Juego;
+	function Usuario(nick) {
+		this.nick = nick;
+		this.preparado = 'No preparado';
+		this.estoyPreparado = function () {
+			this.preparado = 'Ready';
+		}
+	}
+
+	module.exports.Juego = Juego;

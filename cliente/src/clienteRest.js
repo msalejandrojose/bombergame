@@ -4,6 +4,7 @@ function ClienteRest(){
 		$.getJSON("/agregarUsuario/"+nick,function(data){    
     		console.log(data);
     		if (data.nick!=""){
+				$.cookie("usr",JSON.stringify(data));
 	    		mostrarUsuario(data);
 	    	}
 	    	else{
@@ -31,6 +32,12 @@ function ClienteRest(){
 	}
 	this.obtenerJugadores=function(nombrePartida){
 		$.getJSON("/obtenerJugadores/"+nombrePartida,function(data){
+			console.log(data);
+		})
+	}
+
+	this.obtenerUsuarios=function(){
+		$.getJSON("/obtenerUsuarios",function(data){
 			console.log(data);
 		})
 	}
