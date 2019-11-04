@@ -4,13 +4,11 @@ var host=config.host;
 var port=config.port;
 var exp=require("express");
 var app=exp(); 
-var modelo=require("./servidor/modelo.js");
-
 var server = require('http').Server(app);
 var io = require('socket.io').listen(server);
-
 var srvWS=require('./servidor/servidorWS.js');
 var ws=new srvWS.ServidorWS();
+var modelo=require("./servidor/modelo.js");
 
 var juego=new modelo.Juego();
 
@@ -25,6 +23,13 @@ app.get("/agregarUsuario/:nick",function(request,response){
 	juego.agregarUsuario(nick,function(usr){
 		response.send(usr);
 	});
+});
+
+app.get("/comprobarUsuario/:nick",function(request,response){
+	var nick=request.params.nick;
+	juego.obtenerUsuario(nick,function(usr){
+		response.send(usr);
+	})
 });
 
 app.get("/crearPartida/:nombrePartida/:nick",function(request,response){
@@ -64,11 +69,10 @@ app.get("/obtenerJugadores/:nombrePartida",function(request,response){
 	})
 });
 
-console.log("Servidor escuchando en "+host+":"+port);
+//console.log("Servidor escuchando en "+host+":"+port);
 //app.listen(port,host);
-
 server.listen(port, function() {
-	console.log('Node app se está ejecutando en el puerto: ', port);
-  });
-  
-ws.lanzarSocketSrv(io,juego)
+  console.log('Node app se está ejecutando en el puerto', port);
+});
+
+ws.lanzarSocketSrv(io,juego);
