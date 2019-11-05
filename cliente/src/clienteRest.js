@@ -50,4 +50,15 @@ function ClienteRest(){
 			console.log(data);
 		})
 	}
+
+	this.cerrarSesion=function(){
+		
+		var usr=JSON.parse($.cookie("usr"));
+		console.log("Vamos a cerrar la sesion de: "+usr.nick);
+		$.getJSON("/cerrarSesion/"+usr.nick,function(data){
+			console.log("Cierro sesion de: "+usr.nick);
+			$.removeCookie("usr");
+			mostrarAgregarUsuario();
+		});
+	}
 }

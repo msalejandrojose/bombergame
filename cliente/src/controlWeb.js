@@ -11,6 +11,8 @@ function comprobarUsuario(){
 }
 
 function mostrarAgregarUsuario(){
+	$('#mAU').remove();
+	$('#mCP').remove();
 	var cadena="<div id='mAU'>";
 	cadena=cadena+"<h3>Usuario</h3>";
 	cadena=cadena+'<input id="nombre" type="text" class="form-control" name="nombre" placeholder="Nombre usuario">';		
@@ -41,10 +43,12 @@ function mostrarAviso(msg){
 }
 
 function mostrarCrearPartida(nick){
+	$('#mCP').remove();
 	$('#mLP').remove();
 	$('#mP').remove();
 	var cadena="<div id='mCP'>";
 	cadena=cadena+"<h3>Bienvenido "+nick+"</h3>";
+	cadena=cadena+"<button type'button' id='CS' class='btn btn-danger'>Cerrar Sesion</button>";
 	cadena=cadena+"<div class='row'><div class='col-sm-8'>";
 	cadena=cadena+"<h3>Crear Partida</h3>";
 	cadena=cadena+'<input id="nombrePartida" type="text" class="form-control" name="nombrePartida" placeholder="Nombre partida">';		
@@ -65,6 +69,9 @@ function mostrarCrearPartida(nick){
 	$('#unirseAPartidaBtn').on('click',function(){
         //rest.obtenerPartidas();
         ws.obtenerPartidas();
+	 });
+	 $('#CS').on('click',function(){
+        rest.cerrarSesion();
      });
 
 }
