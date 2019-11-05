@@ -84,7 +84,7 @@ function Juego(){
 			this.partidas[idp].jugadorPreparado(nick);
 			jugadores=this.partidas[idp].jugadores;
 		}
-		callback(jugadores);
+		callback(this.partidas[idp]);
 	}
 	
 	this.cerrarSesion=function(nick,callback){

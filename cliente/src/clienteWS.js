@@ -48,12 +48,17 @@ function ClienteWS(nick){
 		});
 		this.socket.on('saliste',function(){
 			mostrarCrearPartida(this.nick);
+			borrarCanvas();
 		});
 		this.socket.on('saleJugador',function(jugadores){
 			mostrarListaJugadores(jugadores);
 		});
 		this.socket.on('otropreparado',function(jugadores){
 			mostrarListaJugadores(jugadores);
+		})
+		this.socket.on('aJugar',function(partida){
+			mostrarCanvas();
+
 		})
 	}
 }
