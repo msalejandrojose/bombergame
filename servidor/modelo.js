@@ -79,19 +79,28 @@ function Juego(){
 		callback(jugadores);
 	}
 	this.jugadorPreparado=function(idp,nick,callback){
-		var jugadores=[];
+		//var jugadores=[];
 		if (this.partidas[idp]){
 			this.partidas[idp].jugadorPreparado(nick);
-			jugadores=this.partidas[idp].jugadores;
+			this.partidas[idp].jugadores;
 		}
 		callback(this.partidas[idp]);
 	}
-	
 	this.cerrarSesion=function(nick,callback){
+		var data={res:"nook"};
 		if(this.usuarios[nick]){
-			delete this.usuarios[nick];
+			delete this.usuarios[nick];			
+			data={res:"ok"};
+			console.log("Usuario "+nick+" cierra sesión");
 		}
-		callback(this.usuarios);
+		callback(data);
+	}
+	this.enviarResultado=function(idp,nick,resultado,callback){
+		if (this.partidas[idp]){
+			this.partidas[idp].enviarResultado(nick,resultado);
+			//this.partidas[idp].jugadores;
+		}
+		callback(this.partidas[idp]);
 	}
 }
 
@@ -99,6 +108,7 @@ function Partida(nombre,idp){
 	this.nombre=nombre;
 	this.idp=idp;
 	this.jugadores={};
+	this.numeroEnemigos=4;
 	this.fase=new Inicial();
 	this.agregarJugador=function(usr){
 		this.fase.agregarJugador(usr,this);
@@ -124,6 +134,25 @@ function Partida(nombre,idp){
 		}
 		return res;
 	}
+	this.todosMuertos=function(){
+		res=true;
+		for (var key in this.jugadores){
+		  if (this.jugadores[key].estado!="muerto"){
+		    res=false;
+			}
+		}
+		return res;
+	}
+	this.enviarResultado=function(nick,resultado){
+		this.fase.enviarResultado(nick,resultado,this);
+	}
+	this.muereEnemigo = function(callback){
+		this.numeroEnemigos=this.numeroEnemigos-1;
+		if(this.numeroEnemigos<=0){
+			console.log("Todos los enemigos han muerto");
+		}
+		callback(this.numeroEnemigos);
+	}
 }
 
 function Inicial(){
@@ -137,6 +166,9 @@ function Inicial(){
 			partida.fase=new Jugando();
 		}
 	}
+	this.enviarResultado=function(nick,resultado,partida){
+		console.log("La partida no se ha iniciado");
+	}
 }
 
 function Jugando(){
@@ -147,6 +179,17 @@ function Jugando(){
 	this.jugadorPreparado=function(nick,partida){
 		console.log("la partida ya ha comenzado");
 	}
+	this.enviarResultado=function(nick,resultado,partida){
+		//anotar resultado
+		if (resultado.vidas<=0){
+			partida.jugadores[nick].estado="muerto";
+		}
+		if (partida.todosMuertos()){
+			partida.fase=new Final();
+		}
+		//comprobar que alguien haya ganado
+		console.log("anotar resultado nivel: "+resultado.nivel);
+	}
 }
 
 function Final(){
@@ -154,6 +197,10 @@ function Final(){
 	this.agregarJugador=function(usr,partida){
 		console.log("El juego ya ha terminado");
 	}
+	this.enviarResultado=function(nick,resultado,partida){
+		console.log("La partida ha terminado");
+	}
+	
 }
 
 function Usuario(nick){

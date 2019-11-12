@@ -71,10 +71,11 @@ app.get("/obtenerJugadores/:nombrePartida",function(request,response){
 
 app.get("/cerrarSesion/:nick",function(request,response){
 	var nick=request.params.nick;
-	juego.cerrarSesion(nick,function(usuarios){
-		response.send(usuarios);
+	//var data={res:"nook"};
+	juego.cerrarSesion(nick,function(data){
+		response.send(data);
 	});
-});
+})
 
 //console.log("Servidor escuchando en "+host+":"+port);
 //app.listen(port,host);

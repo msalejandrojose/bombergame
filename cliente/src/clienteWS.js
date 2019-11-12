@@ -24,6 +24,12 @@ function ClienteWS(nick){
 		$('#preparadoBtn').remove();
 		this.socket.emit("preparado",this.idp,this.nick);
 	}
+	this.enviarResultado=function(nivel,vidas){
+		this.socket.emit("enviarResultado",this.idp,this.nick,{"nivel":nivel,"vidas":vidas});
+	}
+	this.muereEnemigo=function(){
+		this.socket.emit("muereEnemigo",this.idp);
+	}
 	this.lanzarSocketSrv=function(){
 		var cli=this;
 		this.socket.on('connect', function(){   						
@@ -47,7 +53,7 @@ function ClienteWS(nick){
 			mostrarListaJugadores(jugadores);
 		});
 		this.socket.on('saliste',function(){
-			mostrarCrearPartida(this.nick);
+			mostrarCrearPartida(cli.nick);
 			borrarCanvas();
 		});
 		this.socket.on('saleJugador',function(jugadores){
@@ -55,10 +61,23 @@ function ClienteWS(nick){
 		});
 		this.socket.on('otropreparado',function(jugadores){
 			mostrarListaJugadores(jugadores);
-		})
-		this.socket.on('aJugar',function(partida){
+		});
+		this.socket.on('aJugar',function(){
 			mostrarCanvas();
-
-		})
+		});
+		this.socket.on('anotado',function(){ //function(resultados)
+			//mostrarListaResultados(resultados)
+			console.log("Resultado anotado");
+		});
+		this.socket.on('finpartida',function(){ //function(resultados)
+			//mostrarListaResultados(resultados)
+			console.log("Fin de la partida");
+			//mostrarCrearPartida(cli.nick);
+			//borrarCanvas();
+			cli.salir();
+		});
+		this.socket.on('enemigoMuerto',function(numeroEnemigos){ 
+			console.log("Quedan: "+numeroEnemigos+" enemigos.")
+		});
 	}
 }

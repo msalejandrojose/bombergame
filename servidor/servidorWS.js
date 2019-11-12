@@ -38,14 +38,29 @@ function ServidorWS(){
     		});
             socket.on("preparado",function(idp,nick){
                 juego.jugadorPreparado(idp,nick,function(partida){
-					cli.enviarATodos(io,idp,"otropreparado",partida.jugadores);       
-					if(partida.fase.nombre=="jugando"){
-						cli.enviarATodos(io,idp,"aJugar",partida);     
-					}             
+                    cli.enviarATodos(io,idp,"otropreparado",partida.jugadores);                    
+                    if (partida.fase.nombre=="jugando"){
+                        cli.enviarATodos(io,idp,"aJugar",{});
+                    }
                 });                
             });
-    	});
-    }
+            socket.on("enviarResultado",function(idp,nick,resultado){
+                juego.enviarResultado(idp,nick,resultado,function(partida){ //function(resultados) 
+					if(partida && partida.fase.nombre=="final"){
+						cli.enviarATodos(io,idp,"finpartida",{}); //   
+					}else{
+						cli.enviarRemitente(socket,"anotado"); // ,resultados);
+					}
+					
+                });
+			});
+			socket.on("muereEnemigo",function(idp){
+                juego.partidas[idp].muereEnemigo(function(numeroEnemigos){
+					cli.enviarRemitente(socket,"enemigoMuerto",numeroEnemigos);
+				});
+			});
+		});
+    };
 }
 
 module.exports.ServidorWS=ServidorWS;
