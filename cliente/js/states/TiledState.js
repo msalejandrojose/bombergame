@@ -90,22 +90,24 @@ Bomberman.TiledState.prototype.create_object = function (object) {
     }
     this.prefabs[object.name] = prefab;
 
-    if(object.name.includes("enemy")){
-        this.enemigos[object.name]='vivo';
-    }else{
-        this.jugadores[object.name]='vivo';
+    if (object.name.includes("enemy")){
+        this.enemigos[object.name]="vivo";
     }
+    else{
+        this.jugadores[ws.nick]=object;
+    }
+
 };
 
 Bomberman.TiledState.prototype.todosEnemigosMuertos=function(){
     res=true;
-    for(var key in this.enemigos){
-            if(this.enemigos[key]=="muerto"){
-                res=false;
-            }
+    for (var key in this.enemigos){
+      if (this.enemigos[key]!="muerto"){
+        res=false;
+        }
     }
     return res;
-};
+}
 
 Bomberman.TiledState.prototype.game_over = function () {
     "use strict";

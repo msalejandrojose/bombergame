@@ -2,6 +2,7 @@ function ClienteWS(nick){
 	this.socket=undefined;
 	this.nick=nick;
 	this.idp=undefined;
+	this.jugador=undefined;
 	this.ini=function(){
 		this.socket=io.connect();
 		this.lanzarSocketSrv();
@@ -24,11 +25,14 @@ function ClienteWS(nick){
 		$('#preparadoBtn').remove();
 		this.socket.emit("preparado",this.idp,this.nick);
 	}
-	this.enviarResultado=function(nivel,vidas){
-		this.socket.emit("enviarResultado",this.idp,this.nick,{"nivel":nivel,"vidas":vidas});
+	this.enviarResultado=function(){
+		this.socket.emit("enviarResultado",this.idp,this.nick);
 	}
-	this.muereEnemigo=function(){
-		this.socket.emit("muereEnemigo",this.idp);
+	this.muereEnemigo=function(enemy){
+		this.socket.emit("muereEnemigo",this.idp,this.nick,enemy);
+	}
+	this.jugadorHerido=function(){
+		this.socket.emit("jugadorHerido",this.idp,this.nick);
 	}
 	this.lanzarSocketSrv=function(){
 		var cli=this;
@@ -69,15 +73,14 @@ function ClienteWS(nick){
 			//mostrarListaResultados(resultados)
 			console.log("Resultado anotado");
 		});
-		this.socket.on('finpartida',function(){ //function(resultados)
-			//mostrarListaResultados(resultados)
+		this.socket.on('finPartida',function(){
 			console.log("Fin de la partida");
-			//mostrarCrearPartida(cli.nick);
-			//borrarCanvas();
+			alert("Fin de la partida");
 			cli.salir();
 		});
-		this.socket.on('enemigoMuerto',function(numeroEnemigos){ 
-			console.log("Quedan: "+numeroEnemigos+" enemigos.")
-		});
+		this.socket.on("sigueVivo",function(){
+			console.log("sigue vivo");
+			cli.jugador.volverAInicio();
+		})
 	}
 }

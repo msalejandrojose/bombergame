@@ -3,23 +3,24 @@ var Bomberman = Bomberman || {};
 Bomberman.Enemy = function (game_state, name, position, properties) {
     "use strict";
     Bomberman.Prefab.call(this, game_state, name, position, properties);
-
+    
     this.anchor.setTo(0.5);
-
+    this.name=name;
+    
     this.walking_speed = +properties.walking_speed;
     this.walking_distance = +properties.walking_distance;
     this.direction = +properties.direction;
     this.axis = properties.axis;
-
+    
     this.previous_position = (this.axis === "x") ? this.x : this.y;
-
+    
     this.animations.add("walking_down", [1, 2, 3], 10, true);
     this.animations.add("walking_left", [4, 5, 6, 7], 10, true);
     this.animations.add("walking_right", [4, 5, 6, 7], 10, true);
     this.animations.add("walking_up", [0, 8, 9], 10, true);
-
+    
     this.stopped_frames = [1, 4, 4, 0, 1];
-
+    
     this.game_state.game.physics.arcade.enable(this);
     if (this.axis === "x") {
         this.body.velocity.x = this.direction * this.walking_speed;
@@ -37,7 +38,7 @@ Bomberman.Enemy.prototype.update = function () {
     this.game_state.game.physics.arcade.collide(this, this.game_state.layers.collision, this.switch_direction, null, this);
     this.game_state.game.physics.arcade.overlap(this, this.game_state.groups.bombs, this.switch_direction, null, this);
     this.game_state.game.physics.arcade.overlap(this, this.game_state.groups.explosions, this.kill, null, this);
-
+    
     if (this.body.velocity.x < 0) {
         // walking left
         this.scale.setTo(-1, 1);
@@ -47,7 +48,7 @@ Bomberman.Enemy.prototype.update = function () {
         this.scale.setTo(1, 1);
         this.animations.play("walking_right");
     }
-
+    
     if (this.body.velocity.y < 0) {
         // walking up
         this.animations.play("walking_up");
@@ -55,13 +56,13 @@ Bomberman.Enemy.prototype.update = function () {
         // walking down
         this.animations.play("walking_down");
     }
-
+    
     if (this.body.velocity.x === 0 && this.body.velocity.y === 0) {
         // stop current animation
         this.animations.stop();
         this.frame = this.stopped_frames[this.body.facing];
     }
-
+    
     new_position = (this.axis === "x") ? this.x : this.y;
     if (Math.abs(new_position - this.previous_position) >= this.walking_distance) {
         this.switch_direction();
@@ -79,17 +80,11 @@ Bomberman.Enemy.prototype.switch_direction = function () {
     }
 };
 
-Bomberman.Enemy.prototype.kill = function () {
-    if(this.game_state.enemigos[name]="vivo"){
-        Phaser.Sprite.prototype.kill.call(this);
+Bomberman.Enemy.prototype.kill=function(){
+    if (this.game_state.enemigos[this.name]=="vivo"){
         console.log("Muere enemigo");
         this.game_state.enemigos[this.name]="muerto";
         Phaser.Sprite.prototype.kill.call(this);
+        ws.muereEnemigo(this.name);
     }
-    if(this.game_state.todosEnemigosMuertos()){
-        console.log("Has GANADO");
-        this.game_state.game_over();
-        ws.enviarResultado(1,this.vidas);
-    }
-    ws.muereEnemigo();
-};
+}
